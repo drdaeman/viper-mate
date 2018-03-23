@@ -10,6 +10,8 @@ import (
 	"github.com/gogap/logrus_mate"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
+	"github.com/gogap/config"
+	"fmt"
 )
 
 // provider is a Logrus Mate-compatible ConfigurationProvider
@@ -184,6 +186,14 @@ func (cfg *provider) GetStringList(path string) []string {
 	return nil
 }
 
+func (cfg *provider) IsEmpty() bool {
+	return len(cfg.V.AllKeys()) == 0
+}
+
+func (cfg *provider) String() string {
+	return fmt.Sprintf("%#v", cfg.V.AllSettings())
+}
+
 // Non-string list functions are not implemented in Viper
 func (cfg *provider) GetBooleanList(path string) []bool {
 	return []bool{}
@@ -204,7 +214,7 @@ func (cfg *provider) GetByteList(path string) []byte {
 	return []byte{}
 }
 
-func (cfg *provider) GetConfig(path string) logrus_mate.Configuration {
+func (cfg *provider) GetConfig(path string) config.Configuration {
 	sub := cfg.getSub(splitDottedPathHonouringQuotes(path))
 	if sub != nil {
 		return &provider{V: sub}
@@ -212,8 +222,9 @@ func (cfg *provider) GetConfig(path string) logrus_mate.Configuration {
 	return nil
 }
 
-func (cfg *provider) WithFallback(fallback logrus_mate.Configuration) {
+func (cfg *provider) WithFallback(fallback config.Configuration) config.Configuration {
 	log.Panic("viperConfigProvider.WithFallback is not implemented")
+	return nil
 }
 
 func (cfg *provider) HasPath(path string) bool {
@@ -254,11 +265,11 @@ func (cfg *provider) Keys() []string {
 // uses pre-provided Viper instance.
 // To not expose those dirty hacks to users we hide it in the NewViperMate
 
-func (cfg *provider) ParseString(cfgStr string) logrus_mate.Configuration {
+func (cfg *provider) ParseString(cfgStr string) config.Configuration {
 	return cfg
 }
 
-func (cfg *provider) LoadConfig(filename string) logrus_mate.Configuration {
+func (cfg *provider) LoadConfig(filename string) config.Configuration {
 	log.Panic("LoadConfig is not implemented and not supposed to be called")
 	return nil
 }
