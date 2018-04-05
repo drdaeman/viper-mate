@@ -223,7 +223,10 @@ func (cfg *provider) GetConfig(path string) config.Configuration {
 }
 
 func (cfg *provider) WithFallback(fallback config.Configuration) config.Configuration {
-	log.Panic("viperConfigProvider.WithFallback is not implemented")
+	if fallback == cfg {
+		return cfg
+	}
+	log.Panicf("viperConfigProvider.WithFallback is not implemented fallback: %#v // cfg:%#v)", fallback, cfg)
 	return nil
 }
 
@@ -279,6 +282,9 @@ func NewMate(cfg *viper.Viper) (*logrus_mate.LogrusMate, error) {
 	if cfg == nil {
 		return nil, errors.New("NewMate got a nil Viper reference")
 	}
+	// NOTE: Since https://github.com/gogap/config/commit/b113a10c50f639b23d8b4839b1d7bd0a36d12573
+	// we no longer actually need to set a fake ConfigString, because the configuration is always called with an
+	// empty string. Still keep it for now.
 	return logrus_mate.NewLogrusMate(
 		logrus_mate.ConfigString("/* viper */"), // Hack, see notes above
 		logrus_mate.ConfigProvider(&provider{V: cfg}),
