@@ -34,11 +34,11 @@ Then, an example config (I use YAML, YMMV) could look like, e.g.:
         level: debug
         formatter:
           name: text
-        options:
-          force-colors: true
-          timestamp-format: "2006-01-02T15:04:05Z07:00"
-          disable-timestamp: false
-          full-timestamp: true
+          options:
+            force-colors: true
+            timestamp-format: "2006-01-02T15:04:05Z07:00"
+            disable-timestamp: false
+            full-timestamp: true
         hooks:
           # Let's say we want to set up an ELK hook
           logstash:

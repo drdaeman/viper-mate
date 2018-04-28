@@ -10,6 +10,8 @@ import (
 	"github.com/gogap/logrus_mate"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
+	"github.com/gogap/config"
+	"fmt"
 )
 
 // provider is a Logrus Mate-compatible ConfigurationProvider
@@ -184,6 +186,14 @@ func (cfg *provider) GetStringList(path string) []string {
 	return nil
 }
 
+func (cfg *provider) IsEmpty() bool {
+	return len(cfg.V.AllKeys()) == 0
+}
+
+func (cfg *provider) String() string {
+	return fmt.Sprintf("%#v", cfg.V.AllSettings())
+}
+
 // Non-string list functions are not implemented in Viper
 func (cfg *provider) GetBooleanList(path string) []bool {
 	return []bool{}
@@ -204,7 +214,7 @@ func (cfg *provider) GetByteList(path string) []byte {
 	return []byte{}
 }
 
-func (cfg *provider) GetConfig(path string) logrus_mate.Configuration {
+func (cfg *provider) GetConfig(path string) config.Configuration {
 	sub := cfg.getSub(splitDottedPathHonouringQuotes(path))
 	if sub != nil {
 		return &provider{V: sub}
@@ -212,8 +222,12 @@ func (cfg *provider) GetConfig(path string) logrus_mate.Configuration {
 	return nil
 }
 
-func (cfg *provider) WithFallback(fallback logrus_mate.Configuration) {
-	log.Panic("viperConfigProvider.WithFallback is not implemented")
+func (cfg *provider) WithFallback(fallback config.Configuration) config.Configuration {
+	if fallback == cfg {
+		return cfg
+	}
+	log.Panicf("viperConfigProvider.WithFallback is not implemented fallback: %#v // cfg:%#v)", fallback, cfg)
+	return nil
 }
 
 func (cfg *provider) HasPath(path string) bool {
@@ -254,11 +268,11 @@ func (cfg *provider) Keys() []string {
 // uses pre-provided Viper instance.
 // To not expose those dirty hacks to users we hide it in the NewViperMate
 
-func (cfg *provider) ParseString(cfgStr string) logrus_mate.Configuration {
+func (cfg *provider) ParseString(cfgStr string) config.Configuration {
 	return cfg
 }
 
-func (cfg *provider) LoadConfig(filename string) logrus_mate.Configuration {
+func (cfg *provider) LoadConfig(filename string) config.Configuration {
 	log.Panic("LoadConfig is not implemented and not supposed to be called")
 	return nil
 }
@@ -268,6 +282,9 @@ func NewMate(cfg *viper.Viper) (*logrus_mate.LogrusMate, error) {
 	if cfg == nil {
 		return nil, errors.New("NewMate got a nil Viper reference")
 	}
+	// NOTE: Since https://github.com/gogap/config/commit/b113a10c50f639b23d8b4839b1d7bd0a36d12573
+	// we no longer actually need to set a fake ConfigString, because the configuration is always called with an
+	// empty string. Still keep it for now.
 	return logrus_mate.NewLogrusMate(
 		logrus_mate.ConfigString("/* viper */"), // Hack, see notes above
 		logrus_mate.ConfigProvider(&provider{V: cfg}),

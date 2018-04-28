@@ -10,8 +10,17 @@
 [[projects]]
   branch = "master"
   name = "github.com/go-akka/configuration"
-  packages = [".","hocon"]
+  packages = [
+    ".",
+    "hocon"
+  ]
   revision = "755180b9a146a94d76051113e9624bdc8327c499"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/gogap/config"
+  packages = ["."]
+  revision = "b113a10c50f639b23d8b4839b1d7bd0a36d12573"
 
 [[projects]]
   branch = "master"
@@ -22,7 +31,17 @@
 [[projects]]
   branch = "master"
   name = "github.com/hashicorp/hcl"
-  packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
+  packages = [
+    ".",
+    "hcl/ast",
+    "hcl/parser",
+    "hcl/scanner",
+    "hcl/strconv",
+    "hcl/token",
+    "json/parser",
+    "json/scanner",
+    "json/token"
+  ]
   revision = "23c074d0eceb2b8a5bfdbb271ab780cde70f05a8"
 
 [[projects]]
@@ -57,7 +76,10 @@
 
 [[projects]]
   name = "github.com/spf13/afero"
-  packages = [".","mem"]
+  packages = [
+    ".",
+    "mem"
+  ]
   revision = "8d919cbe7e2627e417f3e45c3c0e489a5b7e2536"
   version = "v1.0.0"
 
@@ -94,7 +116,14 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/text"
-  packages = ["internal/gen","internal/triegen","internal/ucd","transform","unicode/cldr","unicode/norm"]
+  packages = [
+    "internal/gen",
+    "internal/triegen",
+    "internal/ucd",
+    "transform",
+    "unicode/cldr",
+    "unicode/norm"
+  ]
   revision = "57961680700a5336d15015c8c50686ca5ba362a4"
 
 [[projects]]
@@ -106,6 +135,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "25d20defe186ab48996e970ac0a48a8dc91c004eedc67ad97a8bbdf353c85396"
+  inputs-digest = "a1e61e9caaf16b18e7058396a9e3a89a006ef620c97a3c42f2f21642c483cae4"
   solver-name = "gps-cdcl"
   solver-version = 1
